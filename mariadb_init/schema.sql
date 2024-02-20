@@ -1,0 +1,32 @@
+CREATE DATABASE inventory;
+USE inventory;
+
+CREATE TABLE IF NOT EXISTS users (
+    id INT NOT NULL AUTO_INCREMENT,
+    email VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS products (
+    id INT NOT NULL AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    description VARCHAR(255) NOT NULL,
+    price FLOAT NOT NULL,
+    created_by INT NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (created_by) REFERENCES users(id)
+);
+
+CREATE DATABASE cms_db;
+USE cms_db;
+
+CREATE TABLE IF NOT EXISTS posts (
+    id INT NOT NULL AUTO_INCREMENT,
+    title TEXT NOT NULL,
+    content TEXT NOT NULL,
+    excerpt TEXT NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id)
+);

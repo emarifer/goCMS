@@ -1,0 +1,45 @@
+{{ define "layout.start" }}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Go/Gin+Templ+Htmx: headless CMS (Content Management System) written in Golang" />
+    <meta name="google" content="notranslate" />
+    <link rel="shortcut icon" href="/assets/img/cms-icon.png" type="image/png" />
+    <title>goCMS {{ .title }}</title>
+    <link rel="stylesheet" href="/assets/css/simple.min.css">
+    <link rel="stylesheet" href="/assets/css/transition.styles.css">
+    <script src="/assets/js/htmx.min.js"></script>
+    <script src="/assets/js/client-side-templates.js"></script>
+</head>
+
+<body class="sample-transition" hx-boost="true">
+    {{ if not .error }}
+    <header>
+        <h1>goCMS</h1>
+        <nav>
+            <ul>
+                <li><a href="/" hx-swap="transition:true">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Services</a></li>
+                <li>
+                    <a href="/contact" hx-swap="transition:true">Contact</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    {{ end }}
+    <main>
+        {{ end }}
+
+        {{ define "layout.end" }}
+    </main>
+    <footer>
+        <p>&copy; {{ .year }} goCMS - MIT Licensed.</p>
+    </footer>
+</body>
+
+</html>
+{{ end }}

@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+  db:
+    container_name: gocms-db
+    image: mariadb:jammy
+    volumes:
+      - ./_mariadb_app_data:/var/lib/mysql
+      - ./mariadb_init:/docker-entrypoint-initdb.d
+    ports:
+      - 3306:3306
+    environment:
+      - MARIADB_ROOT_PASSWORD=my-secret-pw
+
+
+# docker compose up -d
+
+# docker exec -it gocms-db mariadb --user root -p # or alternatively:
+# docker exec -it gocms-db mariadb -uroot -pmy-secret-pw
+# (Enter password:my-secret-pw)
+# show databases;
+# use cms_db;
+# show tables;
+# show columns from posts; // describe posts; (is the same)
+
+# Bootstrap with development data. SEE:
+# https://www.beekeeperstudio.io/blog/how-to-use-mariadb-with-docker
+
+# CURRENT TIMESTAMP IN MARIADB. SEE:
+# https://mariadb.com/kb/en/timestamp/
+# https://stackoverflow.com/questions/40864951/mariadb-current-timestamp-default
+
+# USING GOOSE:
+# export GOOSE_DRIVER=mysql
+# export GOOSE_DBSTRING="root:my-secret-pw@tcp(localhost:3306)/cms_db"
+# MAIN COMMANDS:
+# goose create add_sample_post sql
+# goose up / goose down
+# REST OF COMMANDS:
+# https://citizix.com/managing-database-migrations-with-golang-goose-using-incremental-sql-changes/
+# https://github.com/pressly/goose
