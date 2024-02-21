@@ -2,15 +2,13 @@ package api
 
 import (
 	"fmt"
-	"html/template"
 	"net/http"
 	"regexp"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/emarifer/gocms/internal/app/api/dto"
-	"github.com/emarifer/gocms/timezone_conversion"
+	"github.com/emarifer/gocms/views"
 	"github.com/gin-gonic/gin"
 )
 
@@ -33,11 +31,11 @@ func (a *API) homeHandler(c *gin.Context) {
 		return
 	}
 
-	c.HTML(http.StatusOK, "home", gin.H{
-		"title": "| Home",
-		"posts": posts,
-		"year":  time.Now().Year(),
-	})
+	a.renderView(c, http.StatusOK, views.MakePage(
+		"| Home",
+		"",
+		views.Home(posts),
+	))
 }
 
 // This function will act as a controller
@@ -95,13 +93,11 @@ func (a *API) postHandler(c *gin.Context) {
 	}
 
 	// Markdown to HTML the post content
-	md := string(a.mdToHTML([]byte(post.Content)))
+	post.Content = string(a.mdToHTML([]byte(post.Content)))
 
-	c.HTML(http.StatusOK, "post", gin.H{
-		"title":       fmt.Sprintf("| %s", post.Title),
-		"postTitle":   post.Title,
-		"postContent": template.HTML(md),
-		"createdAt":   timezone_conversion.ConvertDateTime(tz, post.CreatedAt),
-		"year":        time.Now().Year(),
-	})
+	a.renderView(c, http.StatusOK, views.MakePage(
+		fmt.Sprintf("| %s", post.Title),
+		"",
+		views.Post(*post, tz),
+	))
 }

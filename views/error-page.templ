@@ -1,0 +1,15 @@
+package views
+
+templ ErrorPage(errMsg string) {
+	<section style="margin-top: 15rem;">
+		<h2 style="color: #641704; text-align: center;">Something went wrong</h2>
+		<article>
+			<h4 style="text-align: center;">{ errMsg }</h4>
+			<p style="text-align: right">
+				<a hx-swap="transition:true" style="color: #5f5f5f; text-decoration: none;" href="/">
+					&larr; Go Back
+				</a>
+			</p>
+		</article>
+	</section>
+}

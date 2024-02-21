@@ -28,7 +28,7 @@ func (a *API) Start(e *gin.Engine, address string) error {
 	e.MaxMultipartMemory = 1                  // 8 MiB max. request
 
 	e.Static("/assets", "./assets")
-	e.LoadHTMLGlob("views/**/*")
+	// e.LoadHTMLGlob("views/**/*") // Used for Go Html templates
 
 	a.registerRoutes(e)
 
@@ -60,7 +60,7 @@ func (a *API) mdToHTML(md []byte) []byte {
 
 // This function will render the templ component into
 // a gin context's Response Writer
-func (a *API) RenderView( // TODO: to lowerCamelCase
+func (a *API) renderView(
 	c *gin.Context, status int, cmp templ.Component,
 ) error {
 	c.Status(status)

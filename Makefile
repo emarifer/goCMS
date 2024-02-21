@@ -5,6 +5,9 @@ GOCLEAN=$(GOCMD) clean
 GOTEST=$(GOCMD) test
 GOGET=$(GOCMD) get
 
+# Templ parameters
+TEMPLCMD=templ
+
 # Application name
 APPNAME=gocms
 
@@ -16,6 +19,7 @@ OUT=./tmp
 all: clean build
 
 build:
+	$(TEMPLCMD) generate
 	$(GOBUILD) -v -o $(OUT)/$(APPNAME) $(SRC)/*.go
 
 clean:

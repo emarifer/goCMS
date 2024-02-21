@@ -1,0 +1,35 @@
+package views
+
+import (
+	"fmt"
+
+	"github.com/emarifer/gocms/internal/app/model"
+)
+
+templ Home(posts []model.Post) {
+	<section>
+		<h2>Latest Posts</h2>
+		if len(posts) != 0 {
+			for _, post := range posts {
+				<article>
+					<h3 style="color: #7c7c7c">{ post.Title }</h3>
+					<p>
+						{ post.Excerpt }&nbsp;
+						<a
+ 							hx-headers="js:{'X-TimeZone': Intl.DateTimeFormat().resolvedOptions().timeZone}"
+ 							style="font-style: italic; text-decoration: none;"
+ 							href={ templ.URL(fmt.Sprintf("/post/%d", post.ID)) }
+ 							hx-swap="transition:true"
+						>
+							read more…
+						</a>
+					</p>
+				</article>
+			}
+		} else {
+			<h5 style="color: #1644a8; text-align: center;">
+				There are no Posts
+			</h5>
+		}
+	</section>
+}

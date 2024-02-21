@@ -2,8 +2,8 @@ package api
 
 import (
 	"fmt"
-	"time"
 
+	"github.com/emarifer/gocms/views"
 	"github.com/gin-gonic/gin"
 )
 
@@ -34,11 +34,11 @@ func (a *API) globalErrorHandler() gin.HandlerFunc {
 			switch e := err.Err.(type) {
 			case *customError:
 				// Handle custom errors
-				c.HTML(e.Code, "error.page", gin.H{
-					"title": fmt.Sprintf("| Error %d", e.Code),
-					"error": e.Message,
-					"year":  time.Now().Year(),
-				})
+				a.renderView(c, e.Code, views.MakePage(
+					fmt.Sprintf("| Error %d", e.Code),
+					e.Message,
+					views.ErrorPage(e.Message),
+				))
 			default:
 				// Handle other errors
 				c.JSON(500, gin.H{

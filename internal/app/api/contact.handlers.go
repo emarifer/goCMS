@@ -3,8 +3,8 @@ package api
 import (
 	"net/http"
 	"net/mail"
-	"time"
 
+	"github.com/emarifer/gocms/views"
 	"github.com/gin-gonic/gin"
 )
 
@@ -20,43 +20,38 @@ func (a *API) contactHandler(c *gin.Context) {
 		// Check email
 		_, err := mail.ParseAddress(email)
 		if err != nil {
-			c.HTML(http.StatusOK, "contact-failure.html", gin.H{
-				"email": email,
-				"error": "invalid email",
-			})
+			a.renderView(c, http.StatusOK, views.ContactFailure(
+				email, "invalid email",
+			))
 
 			return
 		}
 
 		// Make sure name and message is reasonable
 		if len(name) > 200 {
-			c.HTML(http.StatusOK, "contact-failure.html", gin.H{
-				"email": email,
-				"error": "enter a name of less than 200 characters",
-			})
+			a.renderView(c, http.StatusOK, views.ContactFailure(
+				email, "enter a name of less than 200 characters",
+			))
 
 			return
 		}
 
 		if len(message) > 1000 {
-			c.HTML(http.StatusOK, "contact-failure.html", gin.H{
-				"email": email,
-				"error": "message too big",
-			})
+			a.renderView(c, http.StatusOK, views.ContactFailure(
+				email, "message too big",
+			))
 
 			return
 		}
 
-		c.HTML(http.StatusOK, "contact-success.html", gin.H{
-			"email": email,
-			"name":  name,
-		})
+		a.renderView(c, http.StatusOK, views.ContactSuccess(email, name))
 
 		return
 	}
 
-	c.HTML(http.StatusOK, "contact", gin.H{
-		"title": " | Contact",
-		"year":  time.Now().Year(),
-	})
+	a.renderView(c, http.StatusOK, views.MakePage(
+		"| Contact",
+		"",
+		views.Contact(),
+	))
 }
