@@ -48,10 +48,11 @@ func (a *API) postHandler(c *gin.Context) {
 
 	// localhost:8080/post/{id}
 	if err := c.ShouldBindUri(postBinding); err != nil {
-		// TODO redo this error to serve error page
-		c.JSON(http.StatusBadRequest, gin.H{
-			"msg": err.Error(),
-		})
+		err := NewCustomError(
+			http.StatusBadRequest,
+			"Invalid URL.",
+		)
+		c.Error(err)
 
 		return
 	}

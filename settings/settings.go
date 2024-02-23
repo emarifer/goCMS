@@ -18,8 +18,9 @@ type DatabaseConfig struct {
 }
 
 type Settings struct {
-	Port string         `yaml:"port"`
-	DB   DatabaseConfig `yaml:"database"`
+	Port      string         `yaml:"port"`
+	AdminPort string         `yaml:"admin-port"`
+	DB        DatabaseConfig `yaml:"database"`
 }
 
 func New() (*Settings, error) {

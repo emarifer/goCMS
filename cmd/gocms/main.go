@@ -6,8 +6,8 @@ import (
 
 	"github.com/emarifer/gocms/database"
 	"github.com/emarifer/gocms/internal/app/api"
-	"github.com/emarifer/gocms/internal/app/repository"
-	"github.com/emarifer/gocms/internal/app/service"
+	"github.com/emarifer/gocms/internal/repository"
+	"github.com/emarifer/gocms/internal/service"
 	"github.com/emarifer/gocms/settings"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/fx"
@@ -88,6 +88,22 @@ https://www.arhea.net/posts/2023-08-25-golang-debugging-with-air-and-vscode/
 
 What is the purpose of .PHONY in a Makefile?:
 https://stackoverflow.com/questions/2145590/what-is-the-purpose-of-phony-in-a-makefile
+
+A-H.TEMPL:
+https://templ.guide/syntax-and-usage/template-composition/
+https://templ.guide/syntax-and-usage/rendering-raw-html/
+
+MISCELLANEOUS:
+https://github.com/a-h/templ/tree/1f30f822a6edfdbfbab9e6851b1ff61e0ab01d4f/examples/integration-gin
+
+https://github.com/stackus/todos
+
+https://toml.io/en/
+
+https://github.com/pelletier/go-toml
+
+[Git: See my last commit]
+https://stackoverflow.com/questions/2231546/git-see-my-last-commit
 */
 
 /* CHECKS FUNCTIONS:

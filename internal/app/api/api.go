@@ -1,9 +1,8 @@
 package api
 
 import (
-	// "github.com/a-h/templ"
 	"github.com/a-h/templ"
-	"github.com/emarifer/gocms/internal/app/service"
+	"github.com/emarifer/gocms/internal/service"
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 	"github.com/gomarkdown/markdown"

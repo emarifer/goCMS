@@ -26,11 +26,16 @@ goCMS is a headless CMS (Content Management System) written in Golang using Gin 
   best languages in the market for backend development.
 - [x] **SQL Database Integration:** Store your posts and pages in SQL databases for reliable and scalable data storage.
 - [x] **Centralized HTTP error handling:** The user receives feedback about the Http errors that their actions may cause, through the use of middleware that centralizes the Http errors that occur.
+- [x] **Live Reload** through the use of `air`.
 - [ ] **Post**: We can add, update, and delete posts. Posts can be served
   through a unique URL.
 - [ ] **Pages**: TODO.
 - [ ] **Menus**: TODO
-- [ ] **Live Reload** through the use of `air`.
+  
+<br />
+
+>[!IMPORTANT]
+>***The Go language uses [html/template](https://pkg.go.dev/html/template) package to render HTML. In this application we have used the [a-h/templ](https://github.com/a-h/templ) library instead. The main difference is that templ uses a generation step to compile the files .templ into Go code (as functions). This means that the templates are type-safe and can be checked at compile time. This amazing library implements a templating language (very similar to JSX) which allows you to write code almost identical to Go (with expressions, control flow, if/else, for loops, etc.) and have autocompletion. For all these reasons, calling these templates from the controllers side will always require the correct data, minimizing errors and thus increasing the security and speed of our coding.***
 
 ## Installation
 
