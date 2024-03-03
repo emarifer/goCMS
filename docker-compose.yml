@@ -22,6 +22,8 @@ services:
 # use cms_db;
 # show tables;
 # show columns from posts; // describe posts; (is the same)
+# get the last 4 records from the "images" table:
+# SELECT * FROM images ORDER BY created_at DESC LIMIT 4;
 
 # Bootstrap with development data. SEE:
 # https://www.beekeeperstudio.io/blog/how-to-use-mariadb-with-docker

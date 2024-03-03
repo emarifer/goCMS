@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/emarifer/gocms/internal/entity"
 )
@@ -121,15 +120,12 @@ func (r *repo) UpdatePost(
 			ctx, qryUpdatePostExcerpt, post.Excerpt, post.ID,
 		)
 		if err != nil {
-			fmt.Println("err-1")
 			return -1, err
 		}
 
 		if row, err = result.RowsAffected(); err != nil {
-			fmt.Println("err-2")
 			return -1, err
 		} else if row == 0 {
-			fmt.Println("err-3")
 			return -1, err
 		}
 	}

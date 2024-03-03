@@ -15,6 +15,10 @@ type Service interface {
 	RecoverPost(ctx context.Context, id int) (*model.Post, error)
 	ChangePost(ctx context.Context, post *entity.Post) (int64, error)
 	RemovePost(ctx context.Context, id int) (int64, error)
+
+	RecoverImageMetadata(ctx context.Context, uuid string) (*model.Image, error)
+	CreateImageMetadata(ctx context.Context, image *entity.Image) error
+	RemoveImage(ctx context.Context, uuid string) (int64, error)
 }
 
 type serv struct {

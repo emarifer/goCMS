@@ -1,6 +1,8 @@
 package api
 
 import (
+	"regexp"
+
 	"github.com/emarifer/gocms/internal/service"
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
@@ -26,6 +28,8 @@ func New(serv service.Service) *API {
 	}
 }
 
+var re = regexp.MustCompile(`Table|refused`)
+
 func (a *API) Start(e *gin.Engine, address string) error {
 	e.Use(gzip.Gzip(gzip.DefaultCompression)) // gzip compression middleware
 	e.Use(a.globalErrorHandler())             // Error handler middleware
@@ -46,6 +50,10 @@ func (a *API) registerRoutes(e *gin.Engine) {
 	v1.GET("/post/:id", a.postHandler)
 	v1.PUT("/post", a.updatePostHandler)
 	v1.DELETE("/post/:id", a.deletePostHandler)
+
+	v1.GET("/image/:uuid", a.getImageHandler)
+	v1.POST("image", a.addImageHandler)
+	v1.DELETE("/image/:uuid", a.deleteImageHandler)
 
 	/* e.GET("/contact", a.contactHandler)
 	e.POST("/contact", a.contactHandler) */

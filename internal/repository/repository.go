@@ -14,6 +14,10 @@ type Repository interface {
 	GetPost(ctx context.Context, id int) (*entity.Post, error)
 	UpdatePost(ctx context.Context, post *entity.Post) (int64, error)
 	DeletePost(ctx context.Context, id int) (int64, error)
+
+	GetImage(ctx context.Context, uuid string) (*entity.Image, error)
+	SaveImage(ctx context.Context, imageData *entity.Image) error
+	DeleteImage(ctx context.Context, uuid string) (int64, error)
 }
 
 type repo struct {

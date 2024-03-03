@@ -1,5 +1,6 @@
 tmp
 bin
 _mariadb_app_data
+images_files
 
 **/*_templ.go

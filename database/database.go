@@ -19,7 +19,7 @@ func NewMariaDBConnection(
 	// connectionString := "root:my-secret-pw@tcp(localhost:3306)/cms_db?parseTime=true" // harcoded connection string
 
 	connectionString := fmt.Sprintf(
-		"%s:%s@tcp(%s:%d)/%s?parseTime=true",
+		"%s:%s@tcp(%s:%d)/%s?parseTime=true&charset=utf8mb4",
 		s.DB.User,
 		s.DB.Password,
 		s.DB.Host,
@@ -43,3 +43,8 @@ func NewMariaDBConnection(
 
 	return db, nil
 }
+
+/* GOLANG STRING CONNECTION CHARSET UTF8MB4. SEE:
+https://chromium.googlesource.com/external/github.com/go-sql-driver/mysql/+/a732e14c62dde3285440047bba97581bc472ae18/README.md
+https://dev.to/matthewdale/sending-in-go-46bf
+*/

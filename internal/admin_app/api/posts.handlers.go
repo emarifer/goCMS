@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"regexp"
 	"strconv"
 	"strings"
 
@@ -13,8 +12,6 @@ import (
 	"github.com/emarifer/gocms/internal/model"
 	"github.com/gin-gonic/gin"
 )
-
-var re = regexp.MustCompile(`Table|refused`)
 
 func (a *API) getPostsHandler(c *gin.Context) {
 	ctx := c.Request.Context()
@@ -193,6 +190,7 @@ func (a *API) updatePostHandler(c *gin.Context) {
 
 	rowsAffected, err := a.serv.ChangePost(ctx, post)
 	if err != nil {
+		// fmt.Println(err)
 		if re.MatchString(err.Error()) {
 			customError := NewCustomError(
 				http.StatusInternalServerError,

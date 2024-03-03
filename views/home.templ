@@ -17,7 +17,7 @@ templ Home(posts []model.Post) {
 						{ post.Excerpt }&nbsp;
 						<a
  							hx-headers="js:{'X-TimeZone': Intl.DateTimeFormat().resolvedOptions().timeZone}"
- 							style="font-style: italic; text-decoration: none;"
+ 							style="font-style: italic;"
  							href={ templ.URL(fmt.Sprintf("/post/%d", post.ID)) }
  							hx-swap="transition:true"
 						>
