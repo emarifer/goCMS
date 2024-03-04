@@ -17,6 +17,9 @@ type Service interface {
 	RemovePost(ctx context.Context, id int) (int64, error)
 
 	RecoverImageMetadata(ctx context.Context, uuid string) (*model.Image, error)
+	RecoverAllImageMetadata(ctx context.Context, limit int) (
+		[]model.Image, error,
+	)
 	CreateImageMetadata(ctx context.Context, image *entity.Image) error
 	RemoveImage(ctx context.Context, uuid string) (int64, error)
 }

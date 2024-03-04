@@ -16,6 +16,7 @@ type Repository interface {
 	DeletePost(ctx context.Context, id int) (int64, error)
 
 	GetImage(ctx context.Context, uuid string) (*entity.Image, error)
+	GetImages(ctx context.Context, limit int) ([]entity.Image, error)
 	SaveImage(ctx context.Context, imageData *entity.Image) error
 	DeleteImage(ctx context.Context, uuid string) (int64, error)
 }

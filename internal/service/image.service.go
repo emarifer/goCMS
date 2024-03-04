@@ -26,6 +26,29 @@ func (s *serv) RecoverImageMetadata(
 	return mi, nil
 }
 
+func (s *serv) RecoverAllImageMetadata(ctx context.Context, limit int) (
+	[]model.Image, error,
+) {
+	ii := []model.Image{}
+
+	entityImages, err := s.repo.GetImages(ctx, limit)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, item := range entityImages {
+		i := model.Image{
+			UUID: item.UUID.String(),
+			Name: item.Name,
+			Alt:  item.Alt,
+		}
+
+		ii = append(ii, i)
+	}
+
+	return ii, nil
+}
+
 func (s *serv) CreateImageMetadata(
 	ctx context.Context, image *entity.Image,
 ) error {

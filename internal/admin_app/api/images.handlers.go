@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"slices"
+	"strconv"
 	"strings"
 
 	"github.com/emarifer/gocms/internal/admin_app/api/dto"
@@ -13,56 +14,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
-
-func (a *API) getImageHandler(c *gin.Context) {
-	ctx := c.Request.Context()
-	imageBinding := &dto.ImageBinding{}
-
-	// localhost:8080/image/{uuid}
-	if err := c.ShouldBindUri(imageBinding); err != nil {
-		customError := NewCustomError(
-			http.StatusBadRequest,
-			err.Error(),
-			"could not get image uuid",
-		)
-		c.Error(customError)
-
-		return
-	}
-
-	// Get image metadata by UUID
-
-	imageMetadata, err := a.serv.RecoverImageMetadata(ctx, imageBinding.UUID)
-	if err != nil {
-		if re.MatchString(err.Error()) {
-			customError := NewCustomError(
-				http.StatusInternalServerError,
-				err.Error(),
-				"An unexpected condition was encountered.",
-			)
-			c.Error(customError)
-
-			return
-		}
-
-		if strings.Contains(err.Error(), "no rows in result set") {
-			customError := NewCustomError(
-				http.StatusNotFound,
-				err.Error(),
-				"The requested resource could not be found but may be available again in the future.",
-			)
-			c.Error(customError)
-
-			return
-		}
-	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"uuid": imageMetadata.UUID,
-		"name": imageMetadata.Name,
-		"alt":  imageMetadata.Alt,
-	})
-}
 
 func (a *API) addImageHandler(c *gin.Context) {
 	c.Request.Body = http.MaxBytesReader(c.Writer, c.Request.Body, 10*1000000)
@@ -201,6 +152,103 @@ func (a *API) addImageHandler(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, gin.H{
 		"id": uuid.String(),
+	})
+}
+
+func (a *API) getImageHandler(c *gin.Context) {
+	ctx := c.Request.Context()
+	imageBinding := &dto.ImageBinding{}
+
+	// localhost:8080/image/{uuid}
+	if err := c.ShouldBindUri(imageBinding); err != nil {
+		customError := NewCustomError(
+			http.StatusBadRequest,
+			err.Error(),
+			"could not get image uuid",
+		)
+		c.Error(customError)
+
+		return
+	}
+
+	// Get image metadata by UUID
+
+	imageMetadata, err := a.serv.RecoverImageMetadata(ctx, imageBinding.UUID)
+	if err != nil {
+		if re.MatchString(err.Error()) {
+			customError := NewCustomError(
+				http.StatusInternalServerError,
+				err.Error(),
+				"An unexpected condition was encountered.",
+			)
+			c.Error(customError)
+
+			return
+		}
+
+		if strings.Contains(err.Error(), "no rows in result set") {
+			customError := NewCustomError(
+				http.StatusNotFound,
+				err.Error(),
+				"The requested resource could not be found but may be available again in the future.",
+			)
+			c.Error(customError)
+
+			return
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"uuid": imageMetadata.UUID,
+		"name": imageMetadata.Name,
+		"alt":  imageMetadata.Alt,
+	})
+}
+
+func (a *API) getAllImagesHandler(c *gin.Context) {
+	var (
+		limit int
+		err   error
+	)
+	ctx := c.Request.Context()
+	limitStr := c.Query("limit")
+
+	if limitStr == "" {
+		limit = 5
+	} else {
+		limit, err = strconv.Atoi(limitStr)
+		if err != nil {
+			customError := NewCustomError(
+				http.StatusBadRequest,
+				err.Error(),
+				"images limit type invalid",
+			)
+			c.Error(customError)
+
+			return
+		}
+
+		if limit == 0 {
+			limit = 5
+		}
+	}
+
+	ii, err := a.serv.RecoverAllImageMetadata(ctx, limit)
+	if err != nil {
+		if re.MatchString(err.Error()) {
+			customError := NewCustomError(
+				http.StatusInternalServerError,
+				err.Error(),
+				"An unexpected condition was encountered.",
+			)
+			c.Error(customError)
+
+			return
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"imageMetadata": ii,
 	})
 }
 

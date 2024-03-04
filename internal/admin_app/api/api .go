@@ -52,6 +52,7 @@ func (a *API) registerRoutes(e *gin.Engine) {
 	v1.DELETE("/post/:id", a.deletePostHandler)
 
 	v1.GET("/image/:uuid", a.getImageHandler)
+	v1.GET("/image", a.getAllImagesHandler)
 	v1.POST("image", a.addImageHandler)
 	v1.DELETE("/image/:uuid", a.deleteImageHandler)
 

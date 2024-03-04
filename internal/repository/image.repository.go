@@ -17,6 +17,11 @@ const (
 		WHERE uuid = ?;
 	`
 
+	qryGetAllImages = `
+		SELECT * FROM images
+		ORDER BY created_at DESC LIMIT ?;
+	`
+
 	qryDeleteImage = `
 		DELETE FROM images
 		WHERE uuid = ?;
@@ -44,9 +49,27 @@ func (r *repo) SaveImage(ctx context.Context, imageData *entity.Image) error {
 	return nil
 }
 
+// This function gets all the image metadata from
+// the current database sorted in descending order according to
+// insertion timestamp with a limit
+func (r *repo) GetImages(ctx context.Context, limit int) (
+	[]entity.Image, error,
+) {
+	ii := []entity.Image{}
+
+	err := r.db.SelectContext(ctx, &ii, qryGetAllImages, limit)
+	if err != nil {
+		return nil, err
+	}
+
+	return ii, nil
+}
+
 // This function gets image metadata from the database
 // with the given ID.
-func (r *repo) GetImage(ctx context.Context, uuid string) (*entity.Image, error) {
+func (r *repo) GetImage(ctx context.Context, uuid string) (
+	*entity.Image, error,
+) {
 	img := &entity.Image{}
 
 	err := r.db.GetContext(ctx, img, qryGetImageById, uuid)

@@ -1,9 +1,14 @@
 package entity
 
-import "github.com/google/uuid"
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
 
 type Image struct {
-	UUID uuid.UUID `db:"uuid"`
-	Name string    `db:"name"`
-	Alt  string    `db:"alt"`
+	UUID      uuid.UUID `db:"uuid"`
+	Name      string    `db:"name"`
+	Alt       string    `db:"alt"`
+	CreatedAt time.Time `db:"created_at"`
 }
