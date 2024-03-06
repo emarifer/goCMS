@@ -46,7 +46,7 @@ const (
 	`
 )
 
-// This function inserts a record into the database
+// SavePost inserts a record into the database
 // passing the title, excerpt and content
 func (r *repo) SavePost(ctx context.Context, post *entity.Post) (int, error) {
 	result, err := r.db.NamedExecContext(ctx, qryInsertPost, post)
@@ -62,7 +62,7 @@ func (r *repo) SavePost(ctx context.Context, post *entity.Post) (int, error) {
 	return int(lastId), nil
 }
 
-// This function gets all the posts from the current
+// GetPosts gets all the posts from the current
 // database
 func (r *repo) GetPosts(ctx context.Context) ([]entity.Post, error) {
 	pp := []entity.Post{}
@@ -75,7 +75,7 @@ func (r *repo) GetPosts(ctx context.Context) ([]entity.Post, error) {
 	return pp, nil
 }
 
-// This function gets a post from the database
+// GetPost gets a post from the database
 // with the given ID.
 func (r *repo) GetPost(ctx context.Context, id int) (*entity.Post, error) {
 	p := &entity.Post{}
@@ -88,7 +88,7 @@ func (r *repo) GetPost(ctx context.Context, id int) (*entity.Post, error) {
 	return p, nil
 }
 
-// This function updates a post from the database.
+// UpdatePost updates a post from the database.
 // with the ID and data provided.
 func (r *repo) UpdatePost(
 	ctx context.Context, post *entity.Post,
@@ -152,7 +152,7 @@ func (r *repo) UpdatePost(
 	return row, nil
 }
 
-// This function delete a post from the database
+// DeletePost delete a post from the database
 // with the given ID.
 func (r *repo) DeletePost(ctx context.Context, id int) (int64, error) {
 	var row int64

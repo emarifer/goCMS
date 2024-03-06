@@ -106,7 +106,7 @@ func (a *API) addImageHandler(c *gin.Context) {
 	filename := fmt.Sprintf("%s%s", uuid.String(), ext)
 	rootPath, _ := os.Getwd()
 	image_path := filepath.Join(
-		rootPath, "assets/images_files", filename,
+		rootPath, "assets/media", filename,
 	)
 	err = c.SaveUploadedFile(file, image_path)
 	if err != nil {
@@ -151,7 +151,7 @@ func (a *API) addImageHandler(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
-		"id": uuid.String(),
+		"uuid": uuid.String(),
 	})
 }
 
@@ -325,7 +325,7 @@ func (a *API) deleteImageHandler(c *gin.Context) {
 	// Delete file system image by its path
 	rootPath, _ := os.Getwd()
 	image_path := filepath.Join(
-		rootPath, "assets/images_files", imageMetadata.Name,
+		rootPath, "assets/media", imageMetadata.Name,
 	)
 	err = os.Remove(image_path)
 	if err != nil {

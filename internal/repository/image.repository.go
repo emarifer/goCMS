@@ -28,7 +28,7 @@ const (
 	`
 )
 
-// This function inserts the metadata of an image
+// SaveImage inserts the metadata of an image
 // in the database, passing the id, name and alt text
 func (r *repo) SaveImage(ctx context.Context, imageData *entity.Image) error {
 	tx, err := r.db.Beginx()
@@ -49,7 +49,7 @@ func (r *repo) SaveImage(ctx context.Context, imageData *entity.Image) error {
 	return nil
 }
 
-// This function gets all the image metadata from
+// GetImages gets all the image metadata from
 // the current database sorted in descending order according to
 // insertion timestamp with a limit
 func (r *repo) GetImages(ctx context.Context, limit int) (
@@ -65,7 +65,7 @@ func (r *repo) GetImages(ctx context.Context, limit int) (
 	return ii, nil
 }
 
-// This function gets image metadata from the database
+// GetImage gets image metadata from the database
 // with the given ID.
 func (r *repo) GetImage(ctx context.Context, uuid string) (
 	*entity.Image, error,
@@ -80,7 +80,7 @@ func (r *repo) GetImage(ctx context.Context, uuid string) (
 	return img, nil
 }
 
-// This function delete image metadata from the database
+// DeleteImage delete image metadata from the database
 // with the given ID.
 func (r *repo) DeleteImage(ctx context.Context, uuid string) (int64, error) {
 	var row int64

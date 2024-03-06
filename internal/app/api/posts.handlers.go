@@ -12,7 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// This function will act as the handler for
+// homeHandler will act as the handler for
 // the home page
 func (a *API) homeHandler(c *gin.Context) {
 	ctx := c.Request.Context()
@@ -38,7 +38,7 @@ func (a *API) homeHandler(c *gin.Context) {
 	))
 }
 
-// This function will act as a controller
+// postHandler will act as a controller
 // the post details display page
 func (a *API) postHandler(c *gin.Context) {
 	tz := c.GetHeader("X-TimeZone")

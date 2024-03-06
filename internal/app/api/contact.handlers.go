@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// This function will act as a controller
+// contactHandler will act as a controller
 // for the Contact page and the POST request
 // made by the contact form
 func (a *API) contactHandler(c *gin.Context) {
