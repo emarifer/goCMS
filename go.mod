@@ -14,6 +14,8 @@ require github.com/gomarkdown/markdown v0.0.0-20231222211730-1d6d20845b47
 
 require github.com/google/uuid v1.6.0
 
+require github.com/zutto/shardedmap v0.0.0-20180201164343-415202d0910e // indirect
+
 require (
 	github.com/a-h/templ v0.2.543
 	github.com/bytedance/sonic v1.9.1 // indirect

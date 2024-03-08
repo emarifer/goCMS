@@ -3,6 +3,9 @@ package main
 import (
 	"context"
 	"fmt"
+	"log/slog"
+	"os"
+	"time"
 
 	"github.com/emarifer/gocms/database"
 	"github.com/emarifer/gocms/internal/app/api"
@@ -22,6 +25,11 @@ func main() {
 			repository.New,
 			service.New,
 			gin.Default,
+			func() *os.File { return os.Stdout },
+			func() *slog.JSONHandler {
+				return slog.NewJSONHandler(os.Stdout, nil)
+			},
+			func(h *slog.JSONHandler) *slog.Logger { return slog.New(h) },
 			api.New,
 		),
 
@@ -42,9 +50,10 @@ func setLifeCycle(
 	lc.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
 			address := fmt.Sprintf(":%s", s.Port)
+			cache := api.MakeCache(4, time.Minute*10)
 			go func() {
 				// e.Logger.Fatal(a.Start(e, address))
-				a.Start(e, address)
+				a.Start(e, address, &cache)
 			}()
 
 			return nil
@@ -92,6 +101,19 @@ https://stackoverflow.com/questions/2145590/what-is-the-purpose-of-phony-in-a-ma
 A-H.TEMPL:
 https://templ.guide/syntax-and-usage/template-composition/
 https://templ.guide/syntax-and-usage/rendering-raw-html/
+
+INJECTION OF A LOGGER WITH FX:
+https://uber-go.github.io/fx/container.html#providing-values
+
+USING LOG/SLOG:
+https://www.youtube.com/watch?v=bDpB6k-Q_GY
+https://github.com/disturb16/go_examples/tree/main/btrlogs
+https://betterstack.com/community/guides/logging/logging-in-go/
+https://go.dev/blog/slog
+
+SHARDEDMAP:
+https://pkg.go.dev/github.com/zutto/shardedmap?utm_source=godoc
+https://github.com/zutto/shardedmap
 
 MISCELLANEOUS:
 https://github.com/a-h/templ/tree/1f30f822a6edfdbfbab9e6851b1ff61e0ab01d4f/examples/integration-gin

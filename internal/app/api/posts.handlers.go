@@ -1,9 +1,9 @@
 package api
 
 import (
+	"bytes"
 	"fmt"
 	"net/http"
-	"regexp"
 	"strconv"
 	"strings"
 
@@ -14,9 +14,8 @@ import (
 
 // homeHandler will act as the handler for
 // the home page
-func (a *API) homeHandler(c *gin.Context) {
+func (a *API) homeHandler(c *gin.Context) ([]byte, *customError) {
 	ctx := c.Request.Context()
-	re := regexp.MustCompile(`Table|refused`)
 
 	posts, err := a.serv.RecoverPosts(ctx)
 	if err != nil {
@@ -25,26 +24,32 @@ func (a *API) homeHandler(c *gin.Context) {
 				http.StatusInternalServerError,
 				"An unexpected condition was encountered. Please wait a few moments to reload the page.",
 			)
-			c.Error(err)
-		}
 
-		return
+			return nil, err
+		}
 	}
 
-	a.renderView(c, http.StatusOK, views.MakePage(
-		"| Home",
-		"",
-		views.Home(posts),
-	))
+	cmp := views.MakePage("| Home", "", views.Home(posts))
+	html_buffer := bytes.NewBuffer(nil)
+	err = cmp.Render(c.Request.Context(), html_buffer)
+	if err != nil {
+		err := NewCustomError(
+			http.StatusInternalServerError,
+			"An unexpected condition was encountered. The requested page could not be rendered.",
+		)
+
+		return nil, err
+	}
+
+	return html_buffer.Bytes(), nil
 }
 
 // postHandler will act as a controller
 // the post details display page
-func (a *API) postHandler(c *gin.Context) {
+func (a *API) postHandler(c *gin.Context) ([]byte, *customError) {
 	tz := c.GetHeader("X-TimeZone")
 	ctx := c.Request.Context()
 	postBinding := &dto.PostBinding{}
-	re := regexp.MustCompile(`Table|refused`)
 
 	// localhost:8080/post/{id}
 	if err := c.ShouldBindUri(postBinding); err != nil {
@@ -52,9 +57,8 @@ func (a *API) postHandler(c *gin.Context) {
 			http.StatusBadRequest,
 			"Invalid URL.",
 		)
-		c.Error(err)
 
-		return
+		return nil, err
 	}
 
 	// Get the post with the ID
@@ -66,10 +70,9 @@ func (a *API) postHandler(c *gin.Context) {
 				http.StatusBadRequest,
 				"Invalid URL.",
 			)
-			c.Error(err)
-		}
 
-		return
+			return nil, err
+		}
 	}
 
 	post, err := a.serv.RecoverPost(ctx, postId)
@@ -79,7 +82,8 @@ func (a *API) postHandler(c *gin.Context) {
 				http.StatusInternalServerError,
 				"An unexpected condition was encountered. Please wait a few moments to reload the page.",
 			)
-			c.Error(err)
+
+			return nil, err
 		}
 
 		if strings.Contains(err.Error(), "no rows in result set") {
@@ -87,18 +91,29 @@ func (a *API) postHandler(c *gin.Context) {
 				http.StatusNotFound,
 				"The requested resource could not be found but may be available again in the future.",
 			)
-			c.Error(err)
-		}
 
-		return
+			return nil, err
+		}
 	}
 
 	// Markdown to HTML the post content
 	post.Content = string(a.mdToHTML([]byte(post.Content)))
 
-	a.renderView(c, http.StatusOK, views.MakePage(
+	cmp := views.MakePage(
 		fmt.Sprintf("| %s", post.Title),
 		"",
 		views.Post(*post, tz),
-	))
+	)
+	html_buffer := bytes.NewBuffer(nil)
+	err = cmp.Render(c.Request.Context(), html_buffer)
+	if err != nil {
+		err := NewCustomError(
+			http.StatusInternalServerError,
+			"An unexpected condition was encountered. The requested page could not be rendered.",
+		)
+
+		return nil, err
+	}
+
+	return html_buffer.Bytes(), nil
 }
