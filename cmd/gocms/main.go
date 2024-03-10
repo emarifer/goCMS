@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
 	"log/slog"
 	"os"
@@ -20,16 +21,23 @@ func main() {
 	gocms := fx.New(
 		fx.Provide(
 			context.Background,
-			settings.New,
-			database.NewMariaDBConnection,
-			repository.New,
-			service.New,
-			gin.Default,
 			func() *os.File { return os.Stdout },
 			func() *slog.JSONHandler {
 				return slog.NewJSONHandler(os.Stdout, nil)
 			},
 			func(h *slog.JSONHandler) *slog.Logger { return slog.New(h) },
+			func(l *slog.Logger) *string {
+				config_toml := flag.String("config", "", "path to the config to be used")
+				flag.Parse()
+				l.Info("reading config file", "from path", config_toml)
+
+				return config_toml
+			},
+			settings.New,
+			database.NewMariaDBConnection,
+			repository.New,
+			service.New,
+			gin.Default,
 			api.New,
 		),
 
@@ -44,12 +52,12 @@ func main() {
 func setLifeCycle(
 	lc fx.Lifecycle,
 	a *api.API,
-	s *settings.Settings,
+	s *settings.AppSettings,
 	e *gin.Engine,
 ) {
 	lc.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
-			address := fmt.Sprintf(":%s", s.Port)
+			address := fmt.Sprintf(":%d", s.WebserverPort)
 			cache := api.MakeCache(4, time.Minute*10)
 			go func() {
 				// e.Logger.Fatal(a.Start(e, address))
@@ -114,6 +122,16 @@ https://go.dev/blog/slog
 SHARDEDMAP:
 https://pkg.go.dev/github.com/zutto/shardedmap?utm_source=godoc
 https://github.com/zutto/shardedmap
+
+BENCHMARK WITH/WITHOUT CACHE:
+https://github.com/fcsonline/drill
+
+COMMAND-LINE FLAGS:
+https://gobyexample.com/command-line-flags
+
+DECODING AND ENCODING OF TOML FILES:
+https://github.com/BurntSushi/toml
+https://godocs.io/github.com/BurntSushi/toml
 
 MISCELLANEOUS:
 https://github.com/a-h/templ/tree/1f30f822a6edfdbfbab9e6851b1ff61e0ab01d4f/examples/integration-gin

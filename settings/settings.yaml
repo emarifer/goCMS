@@ -1,8 +1,0 @@
-port: 8080
-admin-port: 8081
-database:
-  host: localhost
-  port: 3306
-  user: root
-  password: my-secret-pw
-  name: cms_db

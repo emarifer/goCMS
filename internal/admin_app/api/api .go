@@ -4,6 +4,7 @@ import (
 	"regexp"
 
 	"github.com/emarifer/gocms/internal/service"
+	"github.com/emarifer/gocms/settings"
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
@@ -12,6 +13,7 @@ import (
 type API struct {
 	serv          service.Service
 	dataValidator *validator.Validate
+	settings      *settings.AppSettings
 }
 
 type ErrorResponse struct {
@@ -20,11 +22,16 @@ type ErrorResponse struct {
 	Value string `json:"value,omitempty"`
 }
 
-func New(serv service.Service) *API {
+func New(
+	serv service.Service,
+	dataValidator *validator.Validate,
+	settings *settings.AppSettings,
+) *API {
 
 	return &API{
 		serv:          serv,
-		dataValidator: validator.New(),
+		dataValidator: dataValidator,
+		settings:      settings,
 	}
 }
 
@@ -34,9 +41,6 @@ func (a *API) Start(e *gin.Engine, address string) error {
 	e.Use(gzip.Gzip(gzip.DefaultCompression)) // gzip compression middleware
 	e.Use(a.globalErrorHandler())             // Error handler middleware
 	e.MaxMultipartMemory = 1                  // 8 MiB max. request
-
-	// e.Static("/assets", "./assets")
-	// e.LoadHTMLGlob("views/**/*") // Used for Go Html templates
 
 	a.registerRoutes(e)
 

@@ -2,7 +2,10 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
+	"log/slog"
+	"os"
 
 	"github.com/emarifer/gocms/database"
 	"github.com/emarifer/gocms/internal/admin_app/api"
@@ -10,6 +13,7 @@ import (
 	"github.com/emarifer/gocms/internal/service"
 	"github.com/emarifer/gocms/settings"
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 	"go.uber.org/fx"
 )
 
@@ -17,6 +21,19 @@ func main() {
 	gocms := fx.New(
 		fx.Provide(
 			context.Background,
+			func() *os.File { return os.Stdout },
+			func() *slog.JSONHandler {
+				return slog.NewJSONHandler(os.Stdout, nil)
+			},
+			func(h *slog.JSONHandler) *slog.Logger { return slog.New(h) },
+			func(l *slog.Logger) *string {
+				config_toml := flag.String("config", "", "path to the config to be used")
+				flag.Parse()
+				l.Info("reading config file", "from path", config_toml)
+
+				return config_toml
+			},
+			validator.New,
 			settings.New,
 			database.NewMariaDBConnection,
 			repository.New,
@@ -36,12 +53,12 @@ func main() {
 func setLifeCycle(
 	lc fx.Lifecycle,
 	a *api.API,
-	s *settings.Settings,
+	s *settings.AppSettings,
 	e *gin.Engine,
 ) {
 	lc.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
-			address := fmt.Sprintf(":%s", s.AdminPort)
+			address := fmt.Sprintf(":%d", s.AdminWebserverPort)
 			go func() {
 				// e.Logger.Fatal(a.Start(e, address))
 				a.Start(e, address)

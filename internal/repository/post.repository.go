@@ -173,4 +173,19 @@ func (r *repo) DeletePost(ctx context.Context, id int) (int64, error) {
 
 /* How to get id of last inserted row from sqlx?. SEE:
 https://stackoverflow.com/questions/53990799/how-to-get-id-of-last-inserted-row-from-sqlx
+
+Using database/sql you have to close the rows with:
+
+	defer func() {
+		err = errors.Join(rows.Close())
+	}()
+
+Or simply:
+
+	defer rows.Close()
+
+But with github.com/jmoiron/sqlx it is no longer necessary, it is not even necessary to open them to be able to scan them and the library itself takes care of everything. SEE:
+https://www.youtube.com/watch?v=R-x9j5blTzI&list=PLZ51_5WcvDvCzCB2nwm8AWodXoBbaO3Iw&index=9&t=8300s
+
+IF THIS IS NOT DONE, USING DATABASE/SQL, WILL CAUSE A DATABASE CRASH WHEN PERFORMING BENCHMARK TESTS, WHICH GENERATE MANY REQUESTS PER SECOND.
 */

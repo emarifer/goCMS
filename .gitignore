@@ -4,3 +4,4 @@ _mariadb_app_data
 media
 
 **/*_templ.go
+_settings.yaml

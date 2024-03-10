@@ -1,0 +1,61 @@
+# Example of a test plan with 100 iterations and ~25 requests each.
+# A plan with 2500 requests in total at 5 iterations at the same time,
+# and a rampup of 2 seconds.
+# COMMAND:
+# ./target/release/drill --benchmark example/benchmark.yml --stats
+# SEE: https://github.com/fcsonline/drill
+
+---
+base: 'http://localhost:8080'
+iterations: 1
+concurrency: 1
+rampup: 2
+
+plan:
+  - name: Show Index {{ index }}
+    request:
+      url: /
+      method: GET
+      body: ''
+    with_items_range:
+      start: 1
+      stop: 10000
+
+  - name: Show Post
+    request:
+      url: /post/5
+      method: GET
+      body: ''
+    with_items_range:
+      start: 1
+      stop: 10000
+
+# =========== BENCHMARK ===========
+
+# WITH CACHE:
+
+# Time taken for tests      4.7 seconds
+# Total requests            20000
+# Successful requests       20000
+# Failed requests           0
+# Requests per second       4221.01 [#/sec]
+# Median time per request   0ms
+# Average time per request  0ms
+# Sample standard deviation 0ms
+# 99.0'th percentile        0ms
+# 99.5'th percentile        1ms
+# 99.9'th percentile        2ms
+
+# WITHOUT CACHE:
+
+# Time taken for tests      15.8 seconds
+# Total requests            20000
+# Successful requests       20000
+# Failed requests           0
+# Requests per second       1266.54 [#/sec]
+# Median time per request   1ms
+# Average time per request  1ms
+# Sample standard deviation 0ms
+# 99.0'th percentile        2ms
+# 99.5'th percentile        2ms
+# 99.9'th percentile        3ms

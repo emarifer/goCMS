@@ -1,0 +1,24 @@
+# port to run the webserver on
+webserver_port = 8080
+
+# port to run the webserver on
+admin_webserver_port = 8081
+
+# database host
+database_host = "localhost"
+
+# database port
+database_port = 3306
+
+# database user
+database_user = "root"
+
+# database user
+database_password = "my-secret-pw"
+
+# name of database where gocms's
+# migrations was installed
+database_name = "cms_db"
+
+# image directory
+image_dir = "/home/enrique/Development/Go/gocms/media"

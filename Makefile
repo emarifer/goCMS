@@ -22,8 +22,8 @@ all: clean build
 
 build:
 	$(TEMPLCMD) generate
-	$(GOBUILD) -v -o $(OUT)/$(APPNAME) $(SRC)/*.go
-	$(GOBUILD) -v -o $(OUT)/$(ADMINAPPNAME) $(ADMINSRC)/*.go
+	$(GOBUILD) -ldflags="-s -w" -v -o $(OUT)/$(APPNAME) $(SRC)/*.go
+	$(GOBUILD) -ldflags="-s -w" -v -o $(OUT)/$(ADMINAPPNAME) $(ADMINSRC)/*.go
 
 clean:
 	$(GOCLEAN)
@@ -32,7 +32,7 @@ clean:
 run:
 #	$(GOBUILD) -o $(OUT)/$(APPNAME) $(SRC)/*.go
 #	$(OUT)/$(APPNAME)
-	$(OUT)/$(ADMINAPPNAME)
+	GIN_MODE=release $(OUT)/$(ADMINAPPNAME) --config settings/gocms_config.toml
 
 test:
 	$(GOTEST) -v ./...

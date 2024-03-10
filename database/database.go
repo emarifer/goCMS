@@ -14,17 +14,17 @@ import (
 
 // NewMariaDBConnection creates a new MariaDB database connection
 func NewMariaDBConnection(
-	ctx context.Context, s *settings.Settings,
+	ctx context.Context, s *settings.AppSettings,
 ) (*sqlx.DB, error) {
 	// connectionString := "root:my-secret-pw@tcp(localhost:3306)/cms_db?parseTime=true" // harcoded connection string
 
 	connectionString := fmt.Sprintf(
 		"%s:%s@tcp(%s:%d)/%s?parseTime=true&charset=utf8mb4",
-		s.DB.User,
-		s.DB.Password,
-		s.DB.Host,
-		s.DB.Port,
-		s.DB.Name,
+		s.DatabaseUser,
+		s.DatabasePassword,
+		s.DatabaseHost,
+		s.DatabasePort,
+		s.DatabaseName,
 	)
 
 	db, err := sqlx.ConnectContext(ctx, "mysql", connectionString)

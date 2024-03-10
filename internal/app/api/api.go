@@ -7,6 +7,7 @@ import (
 
 	"github.com/a-h/templ"
 	"github.com/emarifer/gocms/internal/service"
+	"github.com/emarifer/gocms/settings"
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 	"github.com/gomarkdown/markdown"
@@ -15,15 +16,19 @@ import (
 )
 
 type API struct {
-	serv   service.Service
-	logger *slog.Logger
+	serv     service.Service
+	logger   *slog.Logger
+	settings *settings.AppSettings
 }
 
-func New(serv service.Service, logger *slog.Logger) *API {
+func New(
+	serv service.Service, logger *slog.Logger, settings *settings.AppSettings,
+) *API {
 
 	return &API{
-		serv:   serv,
-		logger: logger,
+		serv:     serv,
+		logger:   logger,
+		settings: settings,
 	}
 }
 
@@ -37,6 +42,7 @@ func (a *API) Start(e *gin.Engine, address string, cache *Cache) error {
 	e.MaxMultipartMemory = 1                  // 8 MiB max. request
 
 	e.Static("/assets", "./assets")
+	e.Static("/media", a.settings.ImageDirectory)
 	// e.LoadHTMLGlob("views/**/*") // Used for Go Html templates
 
 	a.registerRoutes(e, cache)

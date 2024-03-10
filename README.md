@@ -26,7 +26,7 @@ goCMS is a headless CMS (Content Management System) written in Golang using Gin 
   best languages in the market for backend development.
 - [x] **SQL Database Integration:** Store your posts and pages in SQL databases for reliable and scalable data storage.
 - [x] **Centralized HTTP error handling:** The user receives feedback about the Http errors that their actions may cause, through the use of middleware that centralizes the Http errors that occur.
-- [x] **Caching HTML responses from endpoints:** Own implementation of an in-memory cache that stores HTML responses in a map with atomic R/W access for 10 minutes.
+- [x] **Caching HTML responses from endpoints:** Own implementation of an in-memory cache that stores HTML responses for 10 minutes in a map with mutex lock R/W access.
 - [x] **Live Reload** through the use of `air`.
 - [ ] **Post**: We can add, update, and delete posts. Posts can be served
   through a unique URL.
