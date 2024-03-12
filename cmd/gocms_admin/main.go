@@ -33,8 +33,8 @@ func main() {
 
 				return config_toml
 			},
-			validator.New,
 			settings.New,
+			validator.New,
 			database.NewMariaDBConnection,
 			repository.New,
 			service.New,

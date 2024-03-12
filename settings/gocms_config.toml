@@ -4,8 +4,8 @@ webserver_port = 8080
 # port to run the webserver on
 admin_webserver_port = 8081
 
-# database host
-database_host = "localhost"
+# database host # "localhost"
+database_host = "mariadb"
 
 # database port
 database_port = 3306
@@ -20,5 +20,5 @@ database_password = "my-secret-pw"
 # migrations was installed
 database_name = "cms_db"
 
-# image directory
-image_dir = "/home/enrique/Development/Go/gocms/media"
+# image directory # "/home/enrique/Development/Go/gocms/media"
+image_dir = "/gocms/media"

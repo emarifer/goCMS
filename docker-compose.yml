@@ -1,18 +1,59 @@
-version: '3'
+version: '3.8'
 
 services:
-  db:
-    container_name: gocms-db
-    image: mariadb:jammy
+  golang_app:
+    image: emarifer/gocms:0.1
+    ports:
+      - "8080:8080"
     volumes:
-      - ./_mariadb_app_data:/var/lib/mysql
+      - type: bind
+        source: .
+        target: /gocms
+        volume:
+          nocopy: true
+    command: ./gocms/compose-run.sh
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    restart: always
+    networks:
+      - common-net
+
+  mariadb:
+    image: mariadb:jammy
+    container_name: mariadb
+    volumes:
+      # - ./_mariadb_app_data:/var/lib/mysql
       - ./mariadb_init:/docker-entrypoint-initdb.d
     ports:
       - 3306:3306
     environment:
-      - MARIADB_ROOT_PASSWORD=my-secret-pw
+      # MARIADB_PASSWORD: root
+      # MARIADB_DATABASE: urchin
+      MARIADB_ROOT_PASSWORD: my-secret-pw
+    healthcheck:
+      test: [ "CMD", "mariadb", "-u", "root", "-pmy-secret-pw", "-e", "USE cms_db" ]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    networks:
+      - common-net
 
+networks:
+  common-net: {}
 
+# docker exec -it mariadb mariadb -uroot -pmy-secret-pw
+# command & regular expression to capture the volume id/name:
+# docker container inspect mariadb | egrep '\"Name\": \"[0-9a-f]{64}\"'
+# https://docs.docker.com/reference/cli/docker/inspect/
+# https://refine.dev/blog/docker-list-containers/#viewing-container-size:
+# docker ps --size (Only running containers)
+# HOW TO GET THE CREATION DATE OF A DOCKER VOLUME:
+# https://stackoverflow.com/questions/75150068/how-to-get-the-creation-date-of-a-docker-volume
+# COMMAND:
+# docker volume ls --quiet | xargs docker volume inspect --format '{{ .CreatedAt }} {{ .Name }}' | sort
+
+# =========== OTHER REFERENCES ===========
 # docker compose up -d
 
 # docker exec -it gocms-db mariadb --user root -p # or alternatively:
