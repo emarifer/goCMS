@@ -42,9 +42,11 @@ services:
 networks:
   common-net: {}
 
-# docker exec -it mariadb mariadb -uroot -pmy-secret-pw
+# docker exec -it mariadb mariadb -uroot -pmy-secret-pw [mariadb container]
+# docker exec -it gocms-golang_app-1 sh [gocms-golang_app-1 container]
 # command & regular expression to capture the volume id/name:
 # docker container inspect mariadb | egrep '\"Name\": \"[0-9a-f]{64}\"'
+# VIEWING CONTAINER SIZE:
 # https://docs.docker.com/reference/cli/docker/inspect/
 # https://refine.dev/blog/docker-list-containers/#viewing-container-size:
 # docker ps --size (Only running containers)
@@ -52,6 +54,9 @@ networks:
 # https://stackoverflow.com/questions/75150068/how-to-get-the-creation-date-of-a-docker-volume
 # COMMAND:
 # docker volume ls --quiet | xargs docker volume inspect --format '{{ .CreatedAt }} {{ .Name }}' | sort
+# DETECT DUBIOUS OWNERSHIP IN REPOSITORY AT DOCKER CONTAINER:
+# https://docs.docker.com/compose/compose-file/compose-file-v3/#volumes
+# https://community.jenkins.io/t/detected-dubious-ownership-in-repository-with-jenkins-upgrade/6182
 
 # =========== OTHER REFERENCES ===========
 # docker compose up -d

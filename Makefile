@@ -41,4 +41,8 @@ install-tools:
 	go install github.com/a-h/templ/cmd/templ@v0.2.476
 	go install github.com/pressly/goose/v3/cmd/goose@v3.18.0
 
+run-containers:
+	docker build -t emarifer/gocms:0.1  docker/
+	docker compose up
+
 .PHONY: clean

@@ -75,25 +75,34 @@ For more information, see the [configuration settings](#configuration).
 
 ### Example - Running with Docker Compose (user & admin applications)
 
-In this case, the only requirement is to have `Docker` installed.
+In this case the only requirement is to have `Docker` installed and running.
 
-First of all, you will need to create an image with the following command executed at the root of the project:
-
-```bash
-docker build -t emarifer/gocms:0.1 .
-```
-The above will create an Ubuntu:jammy image and, within said OS, it will install Golang, Goose, A-H.Templ and Air.
-
-Next we will execute the `docker-compose.yml` file with the following command:
+To create the image and the `Docker` containers and start the application you only need to run the following command in the project folder:
 
 ```bash
-docker-compose up # 'docker-compose down' to stop and remove containers (run in another terminal)
+make run-containers
+```
+The above will create an Ubuntu:jammy image and, within that OS, will install Golang, Goose, A-H.Templ and Air. Next, from said image and the mariadb:jammy image, you will create and start two containers: one containing the `goCMS` app, serving on port `8080`, and another one serving the `mariadb` database internally (although it also exposes port 3306 to the outside of the container). This will also run the migrations automatically to setup the database!
+
+To stop and eliminate both containers we will execute the following in another terminal:
+
+```bash
+docker compose down # to stop and remove containers (run in another terminal)
 ```
 
-This will start two containers: one containing the `goCMS` app,
-serving on port `8080`, and another one serving the `mariadb`
-database internally (although it also exposes port 3306 to the outside of the container). This will also run the migrations automatically
-to setup the database!
+If we do not plan to delete the containers with the idea of continuing to reuse them, we will simply execute the following command in another terminal:
+
+```bash
+docker stop mariadb gocms-golang_app-1 # to stop containers (run in another terminal)
+```
+
+When we want to start the application again from these `Docker` containers, we will only have to execute the following:
+
+```bash
+docker start mariadb && docker start -a gocms-golang_app-1
+```
+
+(the `-a` flag of the second docker command allows you to see all the application logs through STDOUT).
 
 To start the admin application, outside of `Docker`, simply execute the command:
 
