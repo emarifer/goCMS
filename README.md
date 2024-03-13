@@ -90,21 +90,9 @@ To stop and eliminate both containers we will execute the following in another t
 docker compose down # to stop and remove containers (run in another terminal)
 ```
 
-If we do not plan to delete the containers with the idea of continuing to reuse them, we will simply execute the following command in another terminal:
+If we do not plan to delete the containers with the idea of continuing to reuse them, we will simply press `Ctrl+C` in the same terminal. This will stop the containers without deleting them. The next time we want to start the application we will run `make run-containers` again.
 
-```bash
-docker stop mariadb gocms-golang_app-1 # to stop containers (run in another terminal)
-```
-
-When we want to start the application again from these `Docker` containers, we will only have to execute the following:
-
-```bash
-docker start mariadb && docker start -a gocms-golang_app-1
-```
-
-(the `-a` flag of the second docker command allows you to see all the application logs through STDOUT).
-
-To start the admin application, outside of `Docker`, simply execute the command:
+Whenever we have created/executed the aforementioned containers, the executable file of the admin application will have been created. To start it (outside of `Docker`), simply run the command:
 
 ```bash
 make run
