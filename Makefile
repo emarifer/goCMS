@@ -32,7 +32,7 @@ clean:
 run:
 #	$(GOBUILD) -o $(OUT)/$(APPNAME) $(SRC)/*.go
 #	$(OUT)/$(APPNAME)
-	GIN_MODE=release DATABASE_HOST=localhost DATABASE_PORT=3306 DATABASE_USER=root DATABASE_PASSWORD=my-secret-pw DATABASE_NAME=cms_db IMAGE_DIRECTORY="/home/enrique/Development/Go/gocms/media" $(OUT)/$(ADMINAPPNAME)
+	GIN_MODE=release DATABASE_HOST=localhost DATABASE_PORT=3306 DATABASE_USER=root DATABASE_PASSWORD=my-secret-pw DATABASE_NAME=cms_db IMAGE_DIRECTORY="/home/enrique/Development/Go/gocms/media" CONFIG_FILE_PATH="settings/gocms_config.toml" $(OUT)/$(ADMINAPPNAME)
 
 test:
 	$(GOTEST) -v ./...

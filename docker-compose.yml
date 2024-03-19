@@ -15,7 +15,7 @@ services:
     depends_on:
       mariadb:
         condition: service_healthy
-    restart: always
+    restart: on-failure
     networks:
       - common-net
 
@@ -54,11 +54,46 @@ networks:
 # https://stackoverflow.com/questions/75150068/how-to-get-the-creation-date-of-a-docker-volume
 # COMMAND:
 # docker volume ls --quiet | xargs docker volume inspect --format '{{ .CreatedAt }} {{ .Name }}' | sort
+# HOW TO INSPECT VOLUMES SIZE IN DOCKER:
+# https://medium.com/homullus/how-to-inspect-volumes-size-in-docker-de1068d57f6b
+# docker system df -v | grep cd6ec (e.g.)
 # DETECT DUBIOUS OWNERSHIP IN REPOSITORY AT DOCKER CONTAINER:
 # https://docs.docker.com/compose/compose-file/compose-file-v3/#volumes
 # https://community.jenkins.io/t/detected-dubious-ownership-in-repository-with-jenkins-upgrade/6182
 
-# =========== OTHER REFERENCES ===========
+# =========== OTHER REFERENCES (1) ===========
+# https://iesgn.github.io/curso_docker_2021/sesion3/volumenes.html
+
+# https://docs.docker.com/storage/bind-mounts/
+
+# (VOLUMES 'NOCOPY')
+# https://stackoverflow.com/questions/38287388/docker-and-volumes-nocopy
+# https://github.com/docker/docs/issues/2992#issuecomment-299596714
+
+# https://stackoverflow.com/questions/51313852/docker-compose-cannot-connect-to-database
+
+# https://docs.docker.com/compose/startup-order/
+# https://docs.docker.com/compose/compose-file/05-services/#depends_on
+# https://www.warp.dev/terminus/docker-compose-depends-on
+# https://docs.docker.com/compose/compose-file/05-services/#healthcheck
+# https://www.google.com/search?q=mariadb+healthcheck+db+created&oq=mariadb+healthcheck+db+created&aqs=chrome..69i57j33i160l2.3778j0j7&sourceid=chrome&ie=UTF-8
+# https://kuttler.eu/code/docker-compose-mariadb-mysql-healthcheck/
+# https://www.google.com/search?q=set+-euo+pipefail&oq=set+-euo+pipefail&aqs=chrome..69i57.1859395j0j7&sourceid=chrome&ie=UTF-8
+# https://gist.github.com/mohanpedala/1e2ff5661761d3abd0385e8223e16425?permalink_comment_id=3935570
+
+# (USE A RESTART POLICY [START CONTAINERS AUTOMATICALLY])
+# https://docker-docs.uclv.cu/config/containers/start-containers-automatically/#use-a-restart-policy
+# restart: on-failure
+
+# (HOW TO CLEAR DOCKER CACHE)
+# https://tech.forums.softwareag.com/t/how-to-clear-docker-cache/283214
+# docker system prune -a
+
+# (DOCKER VOLUME PRUNE NOT DELETING UNUSED VOLUMES)
+# https://stackoverflow.com/questions/75493720/docker-volume-prune-not-deleting-unused-volumes
+# docker volume prune --filter all=1
+
+# =========== OTHER REFERENCES (2) ===========
 # docker compose up -d
 
 # docker exec -it gocms-db mariadb --user root -p # or alternatively:

@@ -141,10 +141,37 @@ func (a *API) addPostHandler(c *gin.Context) {
 		return
 	}
 
+	// Getting shortcodeHandlers
+	shortcodeHandlers, err := a.loadShortcodeHandlers()
+	if err != nil {
+		customError := NewCustomError(
+			http.StatusInternalServerError,
+			err.Error(),
+			"the server encountered an unexpected condition that prevented add the post",
+		)
+		c.Error(customError)
+
+		return
+	}
+
+	transformedContent, err := a.transformContent(
+		addPostBinding.Content, shortcodeHandlers,
+	)
+	if err != nil {
+		customError := NewCustomError(
+			http.StatusInternalServerError,
+			err.Error(),
+			"the server encountered an unexpected condition that prevented add the post",
+		)
+		c.Error(customError)
+
+		return
+	}
+
 	post := &entity.Post{
 		Title:   addPostBinding.Title,
 		Excerpt: addPostBinding.Excerpt,
-		Content: addPostBinding.Content,
+		Content: transformedContent,
 	}
 
 	id, err := a.serv.CreatePost(ctx, post)

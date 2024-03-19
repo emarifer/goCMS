@@ -29,15 +29,21 @@ type Settings struct {
 	DB        DatabaseConfig `yaml:"database"`
 } */
 
+type Shortcode struct {
+	Name   string `toml:"name"`   // name for the shortcode {{ name:…:…}}
+	Plugin string `toml:"plugin"` // the lua plugin path
+}
+
 type AppSettings struct {
-	WebserverPort      int    `toml:"webserver_port"`
-	AdminWebserverPort int    `toml:"admin_webserver_port"`
-	DatabaseHost       string `toml:"database_host"`
-	DatabasePort       int    `toml:"database_port"`
-	DatabaseUser       string `toml:"database_user"`
-	DatabasePassword   string `toml:"database_password"`
-	DatabaseName       string `toml:"database_name"`
-	ImageDirectory     string `toml:"image_dir"`
+	WebserverPort      int         `toml:"webserver_port"`
+	AdminWebserverPort int         `toml:"admin_webserver_port"`
+	DatabaseHost       string      `toml:"database_host"`
+	DatabasePort       int         `toml:"database_port"`
+	DatabaseUser       string      `toml:"database_user"`
+	DatabasePassword   string      `toml:"database_password"`
+	DatabaseName       string      `toml:"database_name"`
+	ImageDirectory     string      `toml:"image_dir"`
+	Shortcodes         []Shortcode `toml:"shortcodes"`
 }
 
 func New(filepath *string) (*AppSettings, error) {
@@ -127,6 +133,18 @@ func LoadSettings() (*AppSettings, error) {
 		return appSettings, fmt.Errorf("IMAGE_DIRECTORY is not defined")
 	}
 
+	config_file_path := os.Getenv("CONFIG_FILE_PATH")
+	if len(image_directory) == 0 {
+		return appSettings, fmt.Errorf("CONFIG_FILE_PATH is not defined")
+	}
+
+	s, err := ReadConfigToml(&config_file_path)
+	if err != nil {
+		return appSettings, fmt.Errorf(
+			"CONFIG_FILE_PATH is not valid: %v", err,
+		)
+	}
+
 	return &AppSettings{
 		WebserverPort:      webserver_port,
 		AdminWebserverPort: admin_webserver_port,
@@ -136,6 +154,7 @@ func LoadSettings() (*AppSettings, error) {
 		DatabasePort:       database_port,
 		DatabaseName:       database_name,
 		ImageDirectory:     image_directory,
+		Shortcodes:         s.Shortcodes,
 	}, nil
 }
 

@@ -27,7 +27,8 @@ goCMS is a headless CMS (Content Management System) written in Golang using Gin 
 - [x] **SQL Database Integration:** Store your posts and pages in SQL databases for reliable and scalable data storage.
 - [x] **Centralized HTTP error handling:** The user receives feedback about the Http errors that their actions may cause, through the use of middleware that centralizes the Http errors that occur.
 - [x] **Caching HTML responses from endpoints:** Own implementation of an in-memory cache that stores HTML responses for 10 minutes in a map with mutex lock R/W access.
-- [x] **Live Reload** through the use of `air`.
+- [x] **Live Reload:** through the use of `air`.
+- [x] **Possibility for the user to add their own plugins written in `Lua`:** this feature allows you to customize the admin application at runtime.
 - [ ] **Post**: We can add, update, and delete posts. Posts can be served
   through a unique URL.
 - [ ] **Pages**: TODO.
@@ -102,6 +103,24 @@ The above takes the environment variables that have been added by default in the
 
 ```bash
 ./tmp/gocms-admin # e.g. DATABASE_PORT=3306 ./tmp/gocms-admin
+```
+
+>[!IMPORTANT]
+>***Although the administration application takes the environment variables supplied by the admin related to the listening port and the database, it is also necessary to supply another environment variable related to a `.toml` settings file that specifies the plugins that the application will use:***
+
+```bash
+# e.g.
+
+DATABASE_PORT=3306 CONFIG_FILE_PATH="settings/gocms_config.toml" ./tmp/gocms-admin
+```
+
+```bash
+# .toml settings file
+
+[[shortcodes]]
+name = "img"
+# must have function "HandleShortcode(arguments []string) -> string"
+plugin = "plugins/image_shortcode.lua"
 ```
 
 ## Architecture

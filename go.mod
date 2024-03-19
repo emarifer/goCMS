@@ -16,6 +16,7 @@ require github.com/google/uuid v1.6.0
 
 require (
 	github.com/BurntSushi/toml v1.3.2 // indirect
+	github.com/yuin/gopher-lua v1.1.1 // indirect
 	github.com/zutto/shardedmap v0.0.0-20180201164343-415202d0910e // indirect
 )
 

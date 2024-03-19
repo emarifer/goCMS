@@ -22,3 +22,17 @@ database_name = "cms_db"
 
 # image directory # "/home/enrique/Development/Go/gocms/media"
 image_dir = "/gocms/media"
+
+[[shortcodes]]
+name = "img"
+# must have function "HandleShortcode(arguments []string) -> string"
+plugin = "plugins/image_shortcode.lua"
+
+[[shortcodes]]
+name = "table"
+# must have function "HandleShortcode(arguments []string) -> string"
+plugin = "plugins/table_shortcode.lua"
+
+
+# ARRAY OF TABLES IN .TOML FILES:
+# https://toml.io/en/v1.0.0#array-of-tables
