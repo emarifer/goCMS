@@ -140,11 +140,12 @@ The following list outlines the environment variables needed.
 
 - `GIN_MODE`: `release` for production,
 - `WEBSERVER_PORT`: port from which the application is served, e.g. `8080`.
-- `DATABASE_HOST` should contain the database address, e.g. `localhost`.
-- `DATABASE_PORT` should be the connection port to the database. For example `3306`.
-- `DATABASE_USER` is the database username.
-- `DATABASE_PASSWORD` needs to contain the database password for the given user.
-- `IMAGE_DIRECTORY` indicates the absolute path to the `media` folder on your system.
+- `DATABASE_HOST`: should contain the database address, e.g. `localhost`.
+- `DATABASE_PORT`: should be the connection port to the database. For example `3306`.
+- `DATABASE_USER`: is the database username.
+- `DATABASE_PASSWORD`: needs to contain the database password for the given user.
+- `IMAGE_DIRECTORY`: indicates the absolute path to the `media` folder on your system.
+- `CONFIG_FILE_PATH`: indicates the path to the `.toml` settings file.
 
 ## License
 
