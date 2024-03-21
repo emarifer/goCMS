@@ -4,8 +4,8 @@ webserver_port = 8080
 # port to run the webserver on
 admin_webserver_port = 8081
 
-# database host
-database_host = "localhost"
+# database host (address to the MariaDB database)
+database_host = "mariadb"
 
 # database port
 database_port = 3306
@@ -13,10 +13,11 @@ database_port = 3306
 # database user
 database_user = "root"
 
-# database password
+# database user
 database_password = "my-secret-pw"
 
-# name of database
+# name of database where gocms's
+# migrations was installed
 database_name = "cms_db"
 
 # directory to use for storing uploaded images

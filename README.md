@@ -47,17 +47,18 @@ Ensure you have Golang installed on your system before proceeding with the insta
 go get -u github.com/emarifer/gocms
 ```
 
-### Example - Running the App (user application)
+### Example - Running the App (user application) manually
 
 First, make sure you have the necessary executable binaries to run and work with the application.
+
 ```bash
 make install-tools
 ```
 
-After that, with the `MariaDB` database engine running, make sure to run the migrations with the previously installed `Goose` tool. We recommend creating a database called `cms_db` and running the following command:
+After that, with the `MariaDB` database engine running, with the idea of populating the database with some sample data, make sure to run the migrations with the previously installed `Goose` tool. We recommend creating a database called `cms_db` and running the following command:
 
 ```bash
-GOOSE_DRIVER="mysql" GOOSE_DBSTRING="root:root@/gocms" goose up
+GOOSE_DRIVER="mysql" GOOSE_DBSTRING="root:root@/cms_db" goose up
 ```
 Replace the database connection string with the appropriate string
 dependending on where your database is.
@@ -69,8 +70,15 @@ template, simply build and start the app with the following commands.
 go mod tidy && go build -ldflags="-s -w" -v -o ./tmp/gocms ./cmd/gocms && ./tmp/gocms
 ```
 
-This will start `goCMS` on `http://localhost:8080`. You can customize
-the configuration by providing the necessary environment variables.
+Alternatively, the `air` command will allow us to start the user application (also creating the admin application executable), having, however, with said command the possibility of hot reloading after any change in the user/admin applications code.
+
+This will start `goCMS` on `http://localhost:8080`. If we have used the `air` command we can start the admin application with the `make run` (on `http://localhost:8081`) command. You can customize the configuration by providing the necessary environment variables.
+
+```bash
+# e.g.
+
+DATABASE_PORT=3306 ./tmp/gocms-admin
+```
 
 For more information, see the [configuration settings](#configuration).
 
@@ -83,7 +91,7 @@ To create the image and the `Docker` containers and start the application you on
 ```bash
 make run-containers
 ```
-The above will create an Ubuntu:jammy image and, within that OS, will install Golang, Goose, A-H.Templ and Air. Next, from said image and the mariadb:jammy image, you will create and start two containers: one containing the `goCMS` app, serving on port `8080`, and another one serving the `mariadb` database internally (although it also exposes port 3306 to the outside of the container). This will also run the migrations automatically to setup the database!
+The above will create an Ubuntu:jammy image and, within that OS, will install Golang, Goose, A-H.Templ and Air. Next, from said image and the mariadb:jammy image, you will create and start two containers: one containing the `goCMS` app, serving on port `8080`, and another one serving the `mariadb` database internally. This will also run the migrations automatically to setup the database!
 
 To stop and eliminate both containers we will execute the following in another terminal:
 
@@ -93,35 +101,16 @@ docker compose down # to stop and remove containers (run in another terminal)
 
 If we do not plan to delete the containers with the idea of continuing to reuse them, we will simply press `Ctrl+C` in the same terminal. This will stop the containers without deleting them. The next time we want to start the application we will run `make run-containers` again.
 
-Whenever we have created/executed the aforementioned containers, the executable file of the admin application will have been created. To start it (outside of `Docker`), simply run the command:
+As long as we have created/run the aforementioned containers, the management application executable file will have been created. To start it (within `Docker`), simply run the following commands:
 
 ```bash
-make run
+docker exec -it docker-gocms-1 sh # to enter the `docker-gocms-1` container
+
+cd gocms && make start-admin-container # to enter the project folder (inside the container) and start the admin application
 ```
 
-The above takes the environment variables that have been added by default in the Makefile, but we can add the environment variables we need if we pass them to the command:
-
-```bash
-./tmp/gocms-admin # e.g. DATABASE_PORT=3306 ./tmp/gocms-admin
-```
-
->[!IMPORTANT]
->***Although the administration application takes the environment variables supplied by the admin related to the listening port and the database, it is also necessary to supply another environment variable related to a `.toml` settings file that specifies the plugins that the application will use:***
-
-```bash
-# e.g.
-
-DATABASE_PORT=3306 CONFIG_FILE_PATH="settings/gocms_config.toml" ./tmp/gocms-admin
-```
-
-```bash
-# .toml settings file
-
-[[shortcodes]]
-name = "img"
-# must have function "HandleShortcode(arguments []string) -> string"
-plugin = "plugins/image_shortcode.lua"
-```
+>[!NOTE]
+>***the above serves the application in `http://localhost:8081`.***
 
 ## Architecture
 
@@ -132,20 +121,71 @@ can be hidden, where users can modify the settings, add posts, pages, etc.
 
 ## Configuration
 
-The runtime configuration is handled through reading the
-necessary environment variables. This approach was chosen as
-it makes integrating `envfile`s quite easy.
+The runtime configuration can be done through a [toml](https://toml.io/en/) configuration file or by setting the mandatory environment variables (*fallback*). This approach was chosen because configuration via toml supports advanced features (i.e. *relationships*, *arrays*, etc.). The `.dev.env`-file used only for the `goose up` command, they are not needed for `Docker` files.
 
-The following list outlines the environment variables needed.
+### `.toml` configuration
 
-- `GIN_MODE`: `release` for production,
-- `WEBSERVER_PORT`: port from which the application is served, e.g. `8080`.
-- `DATABASE_HOST`: should contain the database address, e.g. `localhost`.
-- `DATABASE_PORT`: should be the connection port to the database. For example `3306`.
-- `DATABASE_USER`: is the database username.
-- `DATABASE_PASSWORD`: needs to contain the database password for the given user.
-- `IMAGE_DIRECTORY`: indicates the absolute path to the `media` folder on your system.
-- `CONFIG_FILE_PATH`: indicates the path to the `.toml` settings file.
+The application can be started by providing the `config` flag which has to be set to a toml configuration file. The file has to contain the following mandatory values:
+
+```toml
+webserver_port = 8080 # port to run the webserver on
+admin_webserver_port = 8081 # port to run the webserver (admin) on
+database_host = "localhost" # database host (address to the MariaDB database)
+database_port = 3306 # database port
+database_user = "root" # database user
+database_password = "my-secret-pw" # database password
+database_name = "cms_db" # name of the database that is created through `Docker`
+image_dir = "./media" # directory to use for storing uploaded images
+
+# optional: directives containing the name and path of user-supplied `Lua` plugins
+# e.g.
+
+[[shortcodes]]
+name = "img"
+# must have function "HandleShortcode(arguments []string) -> string"
+plugin = "plugins/image_shortcode.lua"
+```
+
+>[!NOTE]
+>***The above configuration values are used to start the local development database, in addition to the user/admin application ports, media storage folder, or optionally, admin plugins directives.***
+
+### Environment variables configuration (fallback)
+
+If chosen, by setting the following environment variables the application can be started without providing a toml configuration file (although a file of this type is necessary to establish the directives of user plugins written in `Lua`). 
+
+- `WEBSERVER_PORT` port the application should run on
+- `ADMIN_WEBSERVER_PORT` the same as the previous one but for the admin app
+- `DATABASE_HOST` should contain the database addres, e.g. `localhost`
+- `DATABASE_PORT` should be the connection port to the db, e.g. `3306`
+- `DATABASE_USER` is the database username.
+- `DATABASE_PASSWORD` needs to contain the database password for the given user.
+- `DATABASE_NAME` sets the name of the database `goCMS` will use.
+- `IMAGE_DIRECTORY` directory images should be stored to if uploaded to `goCMS`
+
+To the above (as we have already mentioned), we would have to add an environment variable (`CONFIG_FILE_PATH`) that contains the path to a `.toml` file that contains the directives for the plugins (`Lua` scripts) that the user wants add. This file would have the form:
+
+```toml
+# e.g.
+
+[[shortcodes]]
+name = "img"
+# must have function "HandleShortcode(arguments []string) -> string"
+plugin = "plugins/image_shortcode.lua"
+```
+
+## Development
+
+To facilitate the development process, `Docker` is highly recommended. This way you can use `docker/mariadb.yml` to configure a predefined MariaDB database server. The file `mariadb.yml` creates the database `cms_db`.
+
+```bash
+$ make start-devdb
+```
+
+To populate the aforementioned db with some sample data you can use this command:
+
+```bash
+$ make run-migrations
+```
 
 ## License
 

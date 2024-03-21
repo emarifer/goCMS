@@ -11,15 +11,10 @@
             "mode": "auto",
             "program": "${workspaceFolder}/cmd/gocms_admin",
             "cwd": "${workspaceFolder}",
-            "env": {
-                "DATABASE_HOST": "localhost",
-                "DATABASE_PORT": "3306",
-                "DATABASE_USER": "root",
-                "DATABASE_PASSWORD": "my-secret-pw",
-                "DATABASE_NAME": "cms_db",
-                "IMAGE_DIRECTORY": "${workspaceFolder}/media",
-                "CONFIG_FILE_PATH": "${workspaceFolder}/settings/gocms_config.toml"
-            }
+            "args": [
+                "--config",
+                "settings/gocms_config.toml"
+            ]
         },
         {
             "name": "goCMS",
@@ -28,15 +23,10 @@
             "mode": "auto",
             "program": "${workspaceFolder}/cmd/gocms",
             "cwd": "${workspaceFolder}",
-            "env": {
-                "DATABASE_HOST": "localhost",
-                "DATABASE_PORT": "3306",
-                "DATABASE_USER": "root",
-                "DATABASE_PASSWORD": "my-secret-pw",
-                "DATABASE_NAME": "cms_db",
-                "IMAGE_DIRECTORY": "${workspaceFolder}/media",
-                "CONFIG_FILE_PATH": "${workspaceFolder}/settings/gocms_config.toml"
-            }
+            "args": [
+                "--config",
+                "settings/gocms_config.toml"
+            ]
         }
     ]
 }

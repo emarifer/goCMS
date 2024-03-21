@@ -1,17 +1,18 @@
 version: '3.8'
 
 services:
-  golang_app:
+  gocms:
     image: emarifer/gocms:0.1
     ports:
       - "8080:8080"
+      - "8081:8081"
     volumes:
       - type: bind
-        source: .
+        source: ..
         target: /gocms
         volume:
           nocopy: true
-    command: ./gocms/compose-run.sh
+    command: /gocms/docker/start-app.sh
     depends_on:
       mariadb:
         condition: service_healthy
@@ -23,16 +24,11 @@ services:
     image: mariadb:jammy
     container_name: mariadb
     volumes:
-      # - ./_mariadb_app_data:/var/lib/mysql
-      - ./mariadb_init:/docker-entrypoint-initdb.d
-    ports:
-      - 3306:3306
+      - ../mariadb_init:/docker-entrypoint-initdb.d
     environment:
-      # MARIADB_PASSWORD: root
-      # MARIADB_DATABASE: urchin
       MARIADB_ROOT_PASSWORD: my-secret-pw
     healthcheck:
-      test: [ "CMD", "mariadb", "-u", "root", "-pmy-secret-pw", "-e", "USE cms_db" ]
+      test: [ "CMD", "mariadb", "-uroot", "-pmy-secret-pw", "-e", "USE cms_db" ]
       interval: 10s
       timeout: 10s
       retries: 10
@@ -43,7 +39,7 @@ networks:
   common-net: {}
 
 # docker exec -it mariadb mariadb -uroot -pmy-secret-pw [mariadb container]
-# docker exec -it gocms-golang_app-1 sh [gocms-golang_app-1 container]
+# docker exec -it docker-gocms-1 sh [docker-gocms-1 container]
 # command & regular expression to capture the volume id/name:
 # docker container inspect mariadb | egrep '\"Name\": \"[0-9a-f]{64}\"'
 # VIEWING CONTAINER SIZE:

@@ -134,7 +134,7 @@ func LoadSettings() (*AppSettings, error) {
 	}
 
 	config_file_path := os.Getenv("CONFIG_FILE_PATH")
-	if len(image_directory) == 0 {
+	if len(config_file_path) == 0 {
 		return appSettings, fmt.Errorf("CONFIG_FILE_PATH is not defined")
 	}
 
