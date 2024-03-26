@@ -1,5 +1,6 @@
 tmp
 bin
 media
+tests/system_tests/helpers/migrations
 
 **/*_templ.go

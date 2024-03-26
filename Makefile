@@ -21,7 +21,11 @@ ADMINSRC=./cmd/gocms_admin
 OUT=./tmp
 
 # Targets
-all: clean build
+all: build test
+
+# Migrations for DB
+prepare_env:
+	cp -r migrations tests/system_tests/helpers/
 
 # ==== Development ====
 
@@ -55,11 +59,15 @@ run-containers:
 start-admin-container:
 	$(OUT)/$(ADMINAPPNAME) --config docker/gocms_config.toml
 
-test:
+# Testing
+test: prepare_env
 	$(GOTEST) -v ./...
 
 clean:
 	$(GOCLEAN)
 	rm -rf $(OUT)
 
-.PHONY: clean
+.PHONY: all build test clean
+
+# Why does make think the target is up to date?. SEE:
+# https://stackoverflow.com/questions/3931741/why-does-make-think-the-target-is-up-to-date

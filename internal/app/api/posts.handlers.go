@@ -26,6 +26,15 @@ func (a *API) homeHandler(c *gin.Context) ([]byte, *customError) {
 			)
 
 			return nil, err
+		} else {
+			err := NewCustomError(
+				http.StatusInternalServerError,
+				fmt.Sprintf(
+					"An unexpected condition was encountered: %s", err.Error(),
+				),
+			)
+
+			return nil, err
 		}
 	}
 

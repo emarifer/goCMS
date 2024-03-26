@@ -12,7 +12,7 @@ goCMS is a headless CMS (Content Management System) written in Golang using Gin 
 
 </p>
   
-![GitHub License](https://img.shields.io/github/license/emarifer/url-shortener-echo-templ-htmx) ![Static Badge](https://img.shields.io/badge/Go-%3E=1.18-blue)
+![GitHub License](https://img.shields.io/github/license/emarifer/url-shortener-echo-templ-htmx) ![Static Badge](https://img.shields.io/badge/Go-%3E=1.22-blue)
 
 </div>
 

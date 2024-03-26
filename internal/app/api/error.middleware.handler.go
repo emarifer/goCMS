@@ -2,6 +2,8 @@ package api
 
 import (
 	"fmt"
+	"log/slog"
+	"os"
 
 	"github.com/emarifer/gocms/views"
 	"github.com/gin-gonic/gin"
@@ -34,11 +36,23 @@ func (a *API) globalErrorHandler() gin.HandlerFunc {
 			switch e := err.Err.(type) {
 			case *customError:
 				// Handle custom errors
-				a.renderView(c, e.Code, views.MakePage(
-					fmt.Sprintf("| Error %d", e.Code),
-					e.Message,
-					views.ErrorPage(e.Message),
-				))
+				// SEE NOTE BELOW (this is hacky):
+				if os.Getenv("GO_ENV") == "testing" {
+					a.logger.Error(
+						"error message",
+						slog.String("could not render HTML", err.Error()),
+					)
+					c.JSON(e.Code, gin.H{
+						"error": "could not render HTML",
+						"msg":   e.Error(),
+					})
+				} else {
+					a.renderView(c, e.Code, views.MakePage(
+						fmt.Sprintf("| Error %d", e.Code),
+						e.Message,
+						views.ErrorPage(e.Message),
+					))
+				}
 			default:
 				// Handle other errors
 				c.JSON(500, gin.H{
@@ -54,4 +68,8 @@ func (a *API) globalErrorHandler() gin.HandlerFunc {
 
 /* REFERENCES:
 https://blog.ruangdeveloper.com/membuat-global-error-handler-go-gin/
+*/
+
+/* HOW DO I KNOW I'M RUNNING WITHIN "GO TEST". SEE:
+https://stackoverflow.com/questions/14249217/how-do-i-know-im-running-within-go-test#59444829
 */

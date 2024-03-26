@@ -3,6 +3,7 @@ package api
 import (
 	"log/slog"
 	"net/http"
+	"os"
 	"regexp"
 
 	"github.com/a-h/templ"
@@ -36,7 +37,9 @@ type generator = func(*gin.Context) ([]byte, *customError)
 
 var re = regexp.MustCompile(`Table|refused`)
 
-func (a *API) Start(e *gin.Engine, address string, cache *Cache) error {
+func (a *API) Start(
+	e *gin.Engine, address string, cache *Cache,
+) (*gin.Engine, error) {
 	e.Use(gzip.Gzip(gzip.DefaultCompression)) // gzip compression middleware
 	e.Use(a.globalErrorHandler())             // Error handler middleware
 	e.MaxMultipartMemory = 1                  // 8 MiB max. request
@@ -47,7 +50,14 @@ func (a *API) Start(e *gin.Engine, address string, cache *Cache) error {
 
 	a.registerRoutes(e, cache)
 
-	return e.Run(address)
+	// SEE NOTE BELOW (this is hacky):
+	if os.Getenv("GO_ENV") == "testing" {
+
+		return e, nil
+	} else {
+
+		return nil, e.Run(address)
+	}
 }
 
 func (a *API) registerRoutes(e *gin.Engine, cache *Cache) {
@@ -144,3 +154,7 @@ func (a *API) addCachableHandler(
 		e.PUT(endpoint, handler)
 	}
 }
+
+/* HOW DO I KNOW I'M RUNNING WITHIN "GO TEST". SEE:
+https://stackoverflow.com/questions/14249217/how-do-i-know-im-running-within-go-test#59444829
+*/

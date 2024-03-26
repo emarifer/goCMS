@@ -2,6 +2,7 @@ package api
 
 import (
 	"fmt"
+	"os"
 	"regexp"
 	"strings"
 
@@ -43,14 +44,21 @@ var re = regexp.MustCompile(`Table|refused`)
 // Find all the occurences of {{ and }} (including whitespace)
 var shortcodesFound = regexp.MustCompile(`{{[\s\w.-]+(:[\s\w.-]+)+}}`)
 
-func (a *API) Start(e *gin.Engine, address string) error {
+func (a *API) Start(e *gin.Engine, address string) (*gin.Engine, error) {
 	e.Use(gzip.Gzip(gzip.DefaultCompression)) // gzip compression middleware
 	e.Use(a.globalErrorHandler())             // Error handler middleware
 	e.MaxMultipartMemory = 1                  // 8 MiB max. request
 
 	a.registerRoutes(e)
 
-	return e.Run(address)
+	// SEE NOTE BELOW (this is hacky):
+	if os.Getenv("GO_ENV") == "testing" {
+
+		return e, nil
+	} else {
+
+		return nil, e.Run(address)
+	}
 }
 
 func (a *API) registerRoutes(e *gin.Engine) {
@@ -210,6 +218,10 @@ func (a *API) transformContent(
 
 	return builder.String(), nil
 }
+
+/* HOW DO I KNOW I'M RUNNING WITHIN "GO TEST". SEE:
+https://stackoverflow.com/questions/14249217/how-do-i-know-im-running-within-go-test#59444829
+*/
 
 /*
 // Markdown to HTML conversion

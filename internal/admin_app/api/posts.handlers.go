@@ -113,7 +113,20 @@ func (a *API) addPostHandler(c *gin.Context) {
 	ctx := c.Request.Context()
 	addPostBinding := &dto.AddPostRequest{}
 
-	if err := c.ShouldBind(addPostBinding); err != nil {
+	if c.Request.Body == nil {
+		customError := NewCustomError(
+			http.StatusBadRequest,
+			"invalid request",
+			"null request body",
+		)
+		c.Error(customError)
+
+		return
+	}
+
+	decoder := json.NewDecoder(c.Request.Body)
+	err := decoder.Decode(addPostBinding)
+	if err != nil {
 		customError := NewCustomError(
 			http.StatusBadRequest,
 			err.Error(),
